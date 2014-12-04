@@ -28,13 +28,8 @@ int main(int argc, char** argv) {
 
     // allocates a shared memory segment, shm = id of shared memory segment
     int shm = shmget(SHM_KEY, SHM_SIZE, 0666 | IPC_CREAT);
-    
+
     void* shma = shmat(shm, NULL, 0);
-    /* attaches the shared memory segment identified by shmid
-     * to the address space of the calling process.
-     * - shmaddr (2nd arg) is NULL - the system chooses
-     * a suitable (unused) address at which to attach the segment.
-     * flags (3rd) is empty */
 
     sem_t* sem_write = shma;
     sem_t* sem_read = shma + SEM_SIZE;
@@ -56,7 +51,7 @@ int main(int argc, char** argv) {
         printf("[pid = %i] done reading, exiting\n", getpid());
         fclose(fin);
         sem_post(sem_read);
-        return 0;    
+        return 0;
     } else {
         while (1) {
             sem_wait(sem_read);
